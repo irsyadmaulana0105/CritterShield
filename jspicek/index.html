@@ -1,0 +1,80 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+</head>
+<body>
+    <h2>Upload Image</h2>
+    <form action="http://localhost:3000/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*">
+        <button type="submit">Upload</button>
+    </form>
+    <br>
+    <br>
+    <br>
+    <button type="submit" onclick="kkk()">cobaaaaaaaaaaaa</button>
+    <script>
+        function kkk(){
+            const TeachableMachine = require("@sashido/teachablemachine-node");
+
+            const model = new TeachableMachine({
+            modelUrl: "https://teachablemachine.withgoogle.com/models/3mJul2-ga/"
+            });
+
+            model.classify({
+            imageUrl: "https://media-blog.sashido.io/content/images/2020/09/SashiDo_Dog.jpg",
+            }).then((predictions) => {
+            console.log("Predictions:", predictions);
+            }).catch((e) => {
+            console.log("ERROR", e);
+            });
+        }
+    </script>
+
+</body>
+</html>
+
+<script></script> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+</head>
+<body>
+    <h2>Upload Image</h2>
+    <form>
+        <input type="file" id="imageInput" accept="image/*">
+        <button type="button" onclick="uploadImage()">Upload</button>
+    </form>
+    <br>
+    <br>
+    <br>
+    <button type="button" onclick="classifyImage()">Classify Image</button>
+    <script>
+        async function classifyImage() {
+            try {
+                const imageUrl = "https://media-blog.sashido.io/content/images/2020/09/SashiDo_Dog.jpg";
+                const response = await fetch('http://localhost:3000/classify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ imageUrl })
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const predictions = await response.json();
+                console.log("Predictions:", predictions);
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+    </script>
+</body>
+</html>

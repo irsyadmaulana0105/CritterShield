@@ -1,0 +1,230 @@
+from google.colab import drive
+drive.mount('/content/drive')
+
+!ls
+
+cd '/content/drive/MyDrive/penyakit'
+
+!mkdir config datasets models
+
+cd '/content/drive/MyDrive/penyakit'
+
+from keras.models import load_model  # TensorFlow is required for Keras to work
+from PIL import Image, ImageOps  # Install pillow instead of PIL
+import numpy as np
+
+# Disable scientific notation for clarity
+np.set_printoptions(suppress=True)
+
+# Load the model
+model = load_model("/content/drive/MyDrive/penyakit/keras_model.h5", compile=False)
+
+# Load the labels
+class_names = open("/content/drive/MyDrive/penyakit/labels.txt", "r").readlines()
+
+# Create the array of the right shape to feed into the keras model
+# The 'length' or number of images you can put into the array is
+# determined by the first position in the shape tuple, in this case 1
+data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+
+# Replace this with the path to your image
+image = Image.open("/content/drive/MyDrive/penyakit/blast.jpeg").convert("RGB")
+
+# resizing the image to be at least 224x224 and then cropping from the center
+size = (224, 224)
+image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
+
+# turn the image into a numpy array
+image_array = np.asarray(image)
+
+# Normalize the image
+normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
+
+# Load the image into the array
+data[0] = normalized_image_array
+
+# Predicts the model
+prediction = model.predict(data)
+index = np.argmax(prediction)
+class_name = class_names[index]
+confidence_score = prediction[0][index]
+
+# Print prediction and confidence score
+print("Class:", class_name[2:], end="")
+print("Confidence Score:", confidence_score)
+
+
+pip install tensorflow
+
+
+base_dir = './Dataset Penyakit Tanaman Baru (Ditambah)/Dataset Penyakit Tanaman Baru (Ditambah)'
+# Periksa direktori di base_dir , OUTPUT = ['train', 'valid']
+os.listdir(base_dir)
+
+import cv2
+import matplotlib.pyplot as plt
+
+# Define the path to the image
+image_path = '/content/drive/MyDrive/penyakit/blast.jpeg'
+
+# Load the image
+img = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
+
+# Display the image
+plt.imshow(img)
+plt.axis('off')
+plt.show()
+
+
+import os
+
+# Define the base directory where your dataset is located
+base_dir = '/content/drive/MyDrive/penyakit/train'
+
+# Get the list of classes (subdirectories) in your dataset
+classes = os.listdir(os.path.join(base_dir, 'train'))
+
+# Initialize variables to store dataset summary
+total_images = 0
+class_summary = {}
+
+# Loop through each class and count the number of images
+for class_name in classes:
+    class_folder = os.path.join(base_dir, 'train', class_name)
+    if os.path.isdir(class_folder):
+        class_images = os.listdir(class_folder)
+        num_images = len(class_images)
+        total_images += num_images
+        class_summary[class_name] = num_images
+
+# Print dataset summary
+print("Dataset Summary:")
+print("Total classes:", len(classes))
+print("Total images:", total_images)
+print("\nClass-wise summary:")
+for class_name, num_images in class_summary.items():
+    print(f"- {class_name}: {num_images} images")
+
+
+from keras.applications import ResNet50
+
+# Instantiate the ResNet50 model
+base_model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+
+# Display the summary of the base model
+base_model.summary()
+
+
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import cv2
+import PIL
+import tensorflow as tf
+from tensorflow.python import keras
+import warnings
+import argparse
+warnings.filterwarnings('ignore')
+from tensorflow.python.keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
+from sklearn.preprocessing import LabelBinarizer, StandardScaler
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.utils import to_categorical
+
+from keras.preprocessing.image import ImageDataGenerator
+
+# Spesifikasi augmentasi dan normalisasi gambar
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True)
+
+validation_datagen = ImageDataGenerator(rescale = 1./255)
+
+
+from keras.preprocessing.image import ImageDataGenerator
+import os
+
+# Tentukan parameter augmentasi dan normalisasi gambar
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True)
+
+# Tentukan jalur ke direktori data latihan
+train_dir = '/content/drive/MyDrive/penyakit'
+valid_dir = '/content/drive/MyDrive/penyakit'
+
+# Membuat generator data dari direktori latihan
+train_set_from_dir = train_datagen.flow_from_directory(
+    train_dir,
+    target_size=(224, 224),
+    batch_size=32,
+    class_mode='categorical')
+
+validation_set_from_dir = validation_datagen.flow_from_directory(
+    valid_dir,  # Gunakan validation_dir di sini
+    target_size=(224, 224),
+    batch_size=32,
+    class_mode='categorical')
+
+
+# Mendapatkan jumlah sampel dalam dataset latihan
+TRAIN_SIZE = train_set_from_dir.samples
+
+# Sekarang Anda dapat mengakses atribut n dari train_set_from_dir
+
+
+TRAIN_SIZE = train_set_from_dir.n
+VALID_SIZE = validation_set_from_dir.n
+
+classes_dict = train_set_from_dir.class_indices
+
+img = train_set_from_dir.filepaths[np.random.random_integers(low=0, high=train_set_from_dir.samples)]
+img = cv2.imread(img)
+plt.imshow(img)
+
+mobilenet_model.summary()
+for idx, layer in enumerate(mobilenet_model.layers):
+    print(idx, layer.name, layer.trainable)
+
+from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+
+callbacks = [
+           ModelCheckpoint('/content/drive/MyDrive/penyakit/keras_model.h5', save_best_only=True, monitor='val_acc'),
+           EarlyStopping(monitor='val_loss', patience=2, verbose=1),
+           ReduceLROnPlateau(factor=0.1, patience=10, min_lr=0.00001, verbose=1)
+]
+
+for (root,dirs,files) in os.walk('.', topdown = True):
+  print(root, dirs)
+
+plt.imshow(test1)
+plt.title(os.listdir(test_images_dir)[idx])
+
+
+
+N_EPOCHS = 10
+
+history = mobilenet_model.fit(train_set_from_dir,
+          validation_data = validation_set_from_dir,
+          epochs = N_EPOCHS,
+          # Use 128 random batches for training set
+          steps_per_epoch = 128, # 128 x 32 = 2**12 random samples
+          # Use 64 random batches for training validation set
+          validation_steps = 100, # 100 x 32 = 3200 random samples
+          callbacks = callbacks
+          )
+
+n = 6
+plt.figure(figsize = (8,5))
+plt.plot(np.arange(1,n+1), history.history['loss'], label = 'train_loss')
+plt.plot(np.arange(1,n+1), history.history['val_loss'], label = 'val_loss')
+plt.plot(np.arange(1,n+1), history.history['accuracy'], label = 'train_accuracy')
+plt.plot(np.arange(1,n+1), history.history['val_accuracy'], label = 'val_accuracy')
+plt.grid(True)
+plt.legend(loc = "best")
+plt.savefig('/content/drive/MyDrive/penyakit/blast.jpeg')
+plt.show()

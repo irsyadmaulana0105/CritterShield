@@ -1,0 +1,57 @@
+<style>
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    margin: 0 auto;
+    width: 50%;
+}
+
+input[type=file] {
+    display: block;
+    margin: 0 auto;
+    padding: 10px;
+    width: 100%;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type=submit] {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background-color: #09bc00;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+p {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+}
+</style>
+
+<!DOCTYPE html>
+<html>  
+    <head>
+        <title>Deteksi</title>
+
+    </head>
+
+    <body>
+        <h1 class="text-center">Image Classifier</h1>
+        <form class="p-3 text-center" action='/', method="post" enctype="multipart/form-data">
+            <input class="form-control" type="file" name="imagefile" >
+            <input class="btn btn-primary mt-3"type="submit" value="Predict Image" >
+        </form>
+        {% if prediction %}
+            <p class="text-center"> Image is a {{prediction}}</p>
+        {% endif %}
+    </body>
+</html>
