@@ -1,5 +1,3 @@
-# CritterShield
-
 # Critter Shield - Aplikasi Deteksi Penyakit Hama
 
 Critter Shield adalah aplikasi berbasis website yang bertujuan untuk mendeteksi penyakit hama pada tanaman menggunakan metode **Convolutional Neural Network (CNN)**. Aplikasi ini memungkinkan pengguna untuk mengunggah gambar tanaman yang terinfeksi atau menggunakan kamera untuk mendeteksi tiga jenis penyakit hama: **Blight**, **Blast**, dan **Tungro**. Aplikasi ini dibangun menggunakan PHP dan menggunakan MySQL untuk penyimpanan data.
